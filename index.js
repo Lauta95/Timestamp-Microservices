@@ -1,7 +1,7 @@
 // index.js
 // where your node app starts
-
 // init project
+require('dotenv').config();
 var express = require('express');
 var app = express();
 
@@ -34,12 +34,30 @@ app.get("/api/:input", (req, res) => {
     responseObject['utc'] = new Date(input).toUTCString();
   }
 
-  if (!responseObject['unix'] || !responseObject['utc']) {
-    res.json({ error: "Invalid Date" })
+  if (isNaN(input)){
+    responseObject['unix'] = new Date(parseInt(input)).getTime();
+    responseObject['utc'] = new Date(parseInt(input)).toUTCString();
   }
+
+    if (!responseObject['unix'] || !responseObject['utc']) {
+      res.json({ error: "Invalid Date" })
+    }
+
+
+
 
   res.json(responseObject)
 });
+
+app.get("/api/", (req, res) => {
+  responseObject['unix'] = new Date().getTime();
+  responseObject['utc'] = new Date().toUTCString();
+  res.json(responseObject);
+})
+
+
+
+
 
 
 
