@@ -22,15 +22,23 @@ app.get("/", function (req, res) {
 // your first API endpoint... 
 let responseObject = {}
 app.get("/api/:input", (req, res) => {
-  let { input } = req.params
-  res.json(input)
-  console.log(typeof input);
-  // const { date } = req.params;
-  // res.send({ date });
-  // let fecha = Math.floor(new Date().getTime() / 1000.0);
-  // let json = JSON.stringify(fecha);
-  // res.json({ fecha });
-  // console.log(typeof date);
+  let { input } = req.params;
+
+
+  if (input.includes('-')) {
+    responseObject['unix'] = new Date(input).getTime();
+    responseObject['utc'] = new Date(input).toUTCString();
+  } else {
+    input = parseInt(input);
+    responseObject['unix'] = new Date(input).getTime();
+    responseObject['utc'] = new Date(input).toUTCString();
+  }
+
+  if (!responseObject['unix'] || !responseObject['utc']) {
+    res.json({ error: "Invalid Date" })
+  }
+
+  res.json(responseObject)
 });
 
 
