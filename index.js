@@ -25,7 +25,11 @@ app.get("/api/:input", (req, res) => {
   let { input } = req.params;
 
 
+
   if (input.includes('-')) {
+    responseObject['unix'] = new Date(input).getTime();
+    responseObject['utc'] = new Date(input).toUTCString();
+  } else if (input.includes(' ')) {
     responseObject['unix'] = new Date(input).getTime();
     responseObject['utc'] = new Date(input).toUTCString();
   } else {
@@ -34,14 +38,9 @@ app.get("/api/:input", (req, res) => {
     responseObject['utc'] = new Date(input).toUTCString();
   }
 
-  if (isNaN(input)){
-    responseObject['unix'] = new Date(parseInt(input)).getTime();
-    responseObject['utc'] = new Date(parseInt(input)).toUTCString();
+  if (!responseObject['unix'] || !responseObject['utc']) {
+    res.json({ error: "Invalid Date" })
   }
-
-    if (!responseObject['unix'] || !responseObject['utc']) {
-      res.json({ error: "Invalid Date" })
-    }
 
 
 
